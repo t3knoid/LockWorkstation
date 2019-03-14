@@ -1,0 +1,19 @@
+version: 1.0.{build}
+configuration: Release
+platform: Any CPU
+before_build:
+- cmd: nuget restore
+build:
+  project: LockWorkstation.sln
+  verbosity: minimal
+before_package:
+- cmd: copy "installer\Plugins\*.dll" "packages\NSIS.2.51\tools\Plugins\"
+after_build:
+- cmd: '"packages\NSIS.2.51\tools\makensis.exe" "installer\LockWorkstation.nsi"'
+artifacts:
+- path: Installer\LockWorkstation_installer.exe
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: gX7uENpEovQdzscLdFEkic6eRFdekgL5T9Uuo/XIGwq7PSTFqnrka1xi+FTDDnYv
+  prerelease: true
